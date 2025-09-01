@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Product } from "@prisma/client";
 
 let prisma: PrismaClient;
 
@@ -9,4 +9,16 @@ export function getPrisma() {
     });
   }
   return prisma;
+}
+
+export async function createProduct(
+  data: Prisma.ProductCreateInput
+): Promise<Product> {
+  const prismaClient = getPrisma(); 
+
+  const product = await prismaClient.product.create({
+    data,
+  });
+
+  return product;
 }

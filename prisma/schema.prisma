@@ -1,12 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -15,36 +8,35 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email String @unique
-  name String?
-  password String?
-  role Role @default(USER)
-
-  product Product[]
-  accounts Account[]
-  session Session[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  email     String    @unique
+  name      String?
+  password  String?
+  role      Role      @default(USER)
+  accounts  Account[]
+  product   Product[]
+  session   Session[]
 }
 
-model Product{
-  id  Int @id @default(autoincrement())
-      p_name String
-      description String?
-      price Float
-      stock Int @default(0)
-      createdAt DateTime @default(now())
-      image Image[]
-
-      userid  Int
-      user User @relation(fields: [userid], references:[id])
+model Product {
+  id          Int      @id @default(autoincrement())
+  p_name      String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  createdAt   DateTime @default(now())
+  userid      Int
+  discount    Float
+  image       Image[]
+  user        User     @relation(fields: [userid], references: [id])
 }
 
-model Image{
-  id Int @id @default(autoincrement())
-  url String
+model Image {
+  id        Int     @id @default(autoincrement())
+  url       String
   productId Int
-  product Product @relation(fields: [productId], references:[id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Account {
@@ -60,7 +52,8 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -71,8 +64,8 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-enum Role{
+
+enum Role {
   USER
   ADMIN
-
 }
