@@ -9,8 +9,8 @@ const Dashboard = async ({searchParams}: {searchParams: {page?:string}}) => {
   const page = parseInt(searchParams.page || "1");
   const limit = 12;
   const{products, pagination} = await fetchProducts(page, limit);
-  console.log(products);
-  console.log(pagination);
+  // console.log(products);
+  // console.log(pagination);
   
   
   return (
