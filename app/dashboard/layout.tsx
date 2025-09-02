@@ -22,7 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <DashboardNav user={{ name: session.user.name }} />
       </header>
       <main className="flex ">
-        <div className="w-xs   text-shadow-white">
+        <div className="lg:w-xs   text-shadow-white">
           <Sidebar/>
         </div>
         {children}

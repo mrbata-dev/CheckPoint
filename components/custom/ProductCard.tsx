@@ -43,22 +43,22 @@ const ProductCard = ({products, image, pagination}: ProductCardProps) => {
 
   if(isLoading) return(<p>Loading........</p>)
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 place-content-center'>
        {
         products.map((items, idx)=> (
            <Link href={`/dashboard/product-details/${items.id}/${items.p_name}`} key={items.id}>
              <div id="card" 
-             className='group border rounded-2xl p-4 hover:scale-105 transition-all ease-in-out duration-75'
+             className='group border rounded-2xl p-4 hover:scale-105 transition-all ease-in-out duration-75 overflow-hidden' 
              >
             <div id="image"
-            className='w-[20rem] rounded-2xl group hover:scale-100'
+            className=' md:w-[15em]   xl:w-[20rem] rounded-2xl group hover:scale-100 overflow-hidden'
             >
               <Image
               src={image[idx]}
               width={500}
               height={200}
               alt={items.p_name}
-              className='w-full h-[15rem]  object-cover'
+              className='w-full h-[10rem] md:h-[15rem]  object-cover overflow-hidden'
               
               />
             </div>

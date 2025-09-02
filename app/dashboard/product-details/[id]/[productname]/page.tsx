@@ -22,7 +22,7 @@ interface Product {
 }
 
 const ProductDetailsPage = ({ params }: ProductDetailsProps) => {
-  const { id } = params;
+  const { id } = params;            
   const [product, setProduct] = useState<Product | null>(null);
   const [mainImage, setMainImage] = useState<string>('');
 
