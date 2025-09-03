@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Define allowed origins
 const allowedOrigins = [
   'http://localhost:3000',
+  'https://check-point-murex.vercel.app'
 ];
 
 // Handle CORS preflight requests
