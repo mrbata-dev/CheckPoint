@@ -176,7 +176,8 @@ const UpdateProduct = ({ productId }: UpdateProductProps) => {
             const res = await axios.put(`/api/products/${productId}`, data);
             console.log('Product updated:', res.data);
             alert('Product updated successfully!');
-            router.push('/dashboard'); 
+            // router.push('/dashboard'); 
+            router.push(`/dashboard/product-details/${productId}/${formData.p_name}`);
         } catch (err) {
             console.error(err);
             alert('Failed to update product');

@@ -62,7 +62,7 @@ export async function createProduct(
   }
 }
 
-export async function fetchProducts(page = 1, limit = 10) {
+export async function fetchProducts(page = 1, limit = 12) {
   const prisma = getPrisma();
   const skip = (page - 1) * limit;
   

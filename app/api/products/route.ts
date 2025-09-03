@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createProduct, fetchProducts } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
@@ -49,31 +49,28 @@ export async function POST(req: Request) {
 }
 
 
-export async function GET(req: Request)
-{
-  const{searchParams} = new URL(req.url);
-  const page = parseInt(searchParams.get('page') || "1");
-  const limit = parseInt(searchParams.get('limit') || "10");
+
+
+
+
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const page = parseInt(searchParams.get('page') || '1');
+  const limit = parseInt(searchParams.get('limit') || '12');
 
   try {
-    const{products, pagination} = await fetchProducts(page, limit);
+    const { products, pagination } = await fetchProducts(page, limit);
+    
     return NextResponse.json({
       products,
-      ...pagination
-    })
+      pagination
+    });
   } catch (error) {
-    console.log('Failed to fetch products', error)
-    NextResponse.json(
-      {error: "Failed to fetch products"},
-      {status: 500}
-    )
-    
+    console.error('Products API error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch products' },
+      { status: 500 }
+    );
   }
 }
-
-
-// export async function DELETE(req: Request)
-// {
-
-// }
-
