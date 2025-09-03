@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createProduct, fetchProducts } from "@/lib/prisma";
 
 import cloudinary from "@/lib/cloudinary";
-
+interface UploadResult {
+  secure_url: string;
+}
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -27,11 +29,11 @@ export async function POST(req: Request) {
       const buffer = Buffer.from(arrayBuffer);
 
       // Upload to Cloudinary
-      const uploadResult = await new Promise<any>((resolve, reject) => {
+      const uploadResult = await new Promise<UploadResult>((resolve, reject) => {
         cloudinary.uploader
-          .upload_stream({ folder: "products" }, (error, result) => {
+          .upload_stream({ folder: "products" }, (error) => {
             if (error) reject(error);
-            else resolve(result);
+            else resolve(new Error('upload result is undefined') as unknown as UploadResult);
           })
           .end(buffer);
       });
