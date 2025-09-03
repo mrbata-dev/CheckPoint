@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createProduct, fetchProducts } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
+import cloudinary from "@/lib/cloudinary";
 
 export async function POST(req: Request) {
   try {
@@ -19,16 +20,24 @@ export async function POST(req: Request) {
     }
 
     // Handle multiple images
-    const images: { url: string }[] = [];
+     const images: { url: string }[] = [];
     const files = formData.getAll("images") as File[];
+
     for (const file of files) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      const fileName = `${Date.now()}-${file.name}`;
-      const filePath = path.join(process.cwd(), "public/uploads", fileName);
 
-      fs.writeFileSync(filePath, buffer);
-      images.push({ url: `/uploads/${fileName}` });
+      // Upload to Cloudinary
+      const uploadResult = await new Promise<any>((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "products" }, (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          })
+          .end(buffer);
+      });
+
+      images.push({ url: uploadResult.secure_url });
     }
 
     const product = await createProduct({
