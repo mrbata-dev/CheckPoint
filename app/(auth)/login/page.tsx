@@ -1,40 +1,27 @@
 'use client'
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const message = searchParams.get('message');
-    if (message) {
-      setSuccess(message);
-      // Clear the message from URL after showing it
-      const url = new URL(window.location.href);
-      url.searchParams.delete('message');
-      window.history.replaceState({}, '', url.toString());
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    setSuccess("");
 
     const res = await signIn("credentials", {
       redirect: false,
       email,
       password,
+      // callbackUrl:"/dashboard"
     });
 
     if (res?.error) {
@@ -106,16 +93,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Success Message */}
-            {success && (
-              <div className="relative">
-                <div className="absolute -inset-1 bg-green-500/20 rounded-lg blur"></div>
-                <div className="relative bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-                  <p className="text-green-400 text-sm text-center">{success}</p>
-                </div>
-              </div>
-            )}
-
             {/* Error Message */}
             {error && (
               <div className="relative">
@@ -150,12 +127,9 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-gray-500 text-sm">
               Don&apos;t have an account?{" "}
-              <Link 
-                href="/signup" 
-                className="text-white hover:text-gray-300 underline underline-offset-2 transition-colors duration-200"
-              >
-                Sign up
-              </Link>
+              <button className="text-white hover:text-gray-300 underline underline-offset-2 transition-colors duration-200">
+                <Link href="/signup">Sign up</Link>
+              </button>
             </p>
           </div>
 
