@@ -33,6 +33,8 @@ const ProductCard = ({products, image}: ProductCardProps) => {
       });
       toast.success('Product deleted successfully!')
     } catch (error) {
+      console.log(error);
+      
       toast.error('Deletion failed!')
       
     }

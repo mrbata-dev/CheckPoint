@@ -28,7 +28,7 @@ model Product {
   stock       Int      @default(0)
   createdAt   DateTime @default(now())
   userid      Int
-  discount    Float
+  discount    Float @default(0)
   image       Image[]
   user        User     @relation(fields: [userid], references: [id])
 }

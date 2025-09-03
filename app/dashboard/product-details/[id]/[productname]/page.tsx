@@ -4,7 +4,7 @@ import { Edit } from 'lucide-react';
 // import { Product } 'from @prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { use, useState } from 'react';
+import React, {  useState } from 'react';
 import toast from 'react-hot-toast';
 
 interface ProductDetailsProps {

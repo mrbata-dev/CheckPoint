@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const stock = formData.get("stock") as string;
     const userid = formData.get("userid") as string;
 
-    if (!product_name || !price || !stock || !userid) {
+    if (!product_name || !price  || !userid) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 

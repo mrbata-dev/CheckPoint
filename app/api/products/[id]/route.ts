@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { writeFile } from 'fs/promises';
 import path from 'path';
@@ -10,11 +10,11 @@ const prisma = new PrismaClient();
 // DELETE /api/products/:id
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Await params to safely access the id
-    const { id } = await params;
+    const { id } = await context.params;
     const productId = parseInt(id);
     
     if (isNaN(productId)) {
@@ -53,12 +53,13 @@ export async function DELETE(
 
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params; 
     const url = new URL(req.url);
-    const idFromPath = params.id;
+    const idFromPath = id;
     const idFromQuery = url.searchParams.get('id');
     const nameFromQuery = url.searchParams.get('name');
 
@@ -110,11 +111,11 @@ export async function GET(
 
 // PUT - Update product
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+    context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
     const productId = parseInt(id);
     
     if (isNaN(productId)) {
@@ -175,7 +176,7 @@ export async function PUT(
     // Use transaction to update product and manage images
     const result = await prisma.$transaction(async (prisma) => {
       // Update product details
-      const updatedProduct = await prisma.product.update({
+await prisma.product.update({
         where: { id: productId },
         data: {
           p_name,

@@ -10,10 +10,10 @@ const AddProducts = () => {
     const { data: session } = useSession();
     const [formData, setFormData] = useState({
         product_name: '',
-        description: '',
+        description: '0',
         price: '',
         discount: '',
-        stock: '',
+        stock: '0',
         images: [] as File[]
     });
 
@@ -21,8 +21,8 @@ const AddProducts = () => {
         product_name: '',
         description: '',
         price: '',
-        discount: '',
-        stock: '',
+        discount: '0',
+        stock: '0',
         images: ''
     });
 
@@ -103,7 +103,7 @@ const AddProducts = () => {
             return;
         }
 
-        formData.images.forEach((img, idx) => {
+        formData.images.forEach((img) => {
             data.append('images', img);
         });
 

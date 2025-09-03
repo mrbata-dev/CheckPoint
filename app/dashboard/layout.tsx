@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <Providers>
  <div>
       <header className="bg-accent-foreground text-white">
-        <DashboardNav user={{ name: session.user.name }} />
+        <DashboardNav user={{ name: session.user.name ?? "" }} />
       </header>
       <main className="flex ">
         <div className="lg:w-xs   text-shadow-white">

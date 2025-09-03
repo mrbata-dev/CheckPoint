@@ -1,8 +1,8 @@
 'use client';
 import ProductCard from '@/components/custom/ProductCard';
 import { Button } from '@/components/ui/button';
-import { Search, X, Filter } from 'lucide-react';
-import Link from 'next/link';
+import { Search, X } from 'lucide-react';
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 // Define types
@@ -68,7 +68,7 @@ const Dashboard = ({ searchParams }: DashboardProps) => {
   const [searchFocused, setSearchFocused] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const page = parseInt(searchParams.page || "1");
+  // const page = parseInt(searchParams.page || "1");
   const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
   // Fetch products function with abort controller for smooth UX

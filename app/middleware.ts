@@ -22,32 +22,41 @@ function handleOptions(request: NextRequest) {
   return response;
 }
 
-export default async function middleware(req: NextRequest) {
-  // Handle preflight requests first
-  if (req.method === 'OPTIONS') {
-    return handleOptions(req);
-  }
+interface AuthToken {
+  role?: string;
+  // Add other properties as needed
+}
 
-  // Process CORS for regular requests
-  const origin = req.headers.get('Origin');
-  if (allowedOrigins.includes(origin || '')) {
-    const response = NextResponse.next();
-    response.headers.set('Access-Control-Allow-Origin', origin || '');
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
-    return response;
-  }
+import { NextRequestWithAuth } from "next-auth/middleware";
 
-  // Apply authentication middleware
-  return withAuth(async (req, event) => {
-    const token = req.nextauth.token;
+const middleware = withAuth(
+  async function middleware(req: NextRequestWithAuth) {
+    // Handle preflight requests first
+    if (req.method === 'OPTIONS') {
+      return handleOptions(req);
+    }
+
+    // Process CORS for regular requests
+    const origin = req.headers.get('Origin');
+    if (allowedOrigins.includes(origin || '')) {
+      const response = NextResponse.next();
+      response.headers.set('Access-Control-Allow-Origin', origin || '');
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
+      return response;
+    }
+
+    // Apply authentication logic
+    const token = req.nextauth?.token;
     const pathname = req.nextUrl.pathname;
-    
+
     if (pathname.startsWith('/dashboard')) {
-      if (!token || token.role !== 'ADMIN') {
+      if (!token || (token as AuthToken | null)?.role !== 'ADMIN') {
         return NextResponse.redirect(new URL('/login', req.url));
       }
     }
-    
+
     return NextResponse.next();
-  })(req);
-}
+  }
+);
+
+export default middleware;

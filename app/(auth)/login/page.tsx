@@ -125,7 +125,7 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="mt-6 text-center">
             <p className="text-gray-500 text-sm">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button className="text-white hover:text-gray-300 underline underline-offset-2 transition-colors duration-200">
                 Sign up
               </button>
