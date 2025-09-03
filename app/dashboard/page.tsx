@@ -31,12 +31,12 @@ interface Pagination {
   limit: number;
 }
 
-interface DashboardProps {
-  searchParams: { 
-    page?: string;
-    q?: string;
-  };
-}
+// interface DashboardProps {
+//   searchParams: Promise<{ 
+//     page?: string;
+//     q?: string;
+//   }>;
+// }
 
 // Debounce utility function
 function useDebounce<T>(value: T, delay: number): T {
@@ -55,7 +55,7 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-const Dashboard = ({ searchParams }: DashboardProps) => {
+const Dashboard = () => {
   const urlSearchParams = useSearchParams();
   const page = urlSearchParams.get('page') ?? '1';
   const q = urlSearchParams.get('q') ?? '';
@@ -72,7 +72,6 @@ const Dashboard = ({ searchParams }: DashboardProps) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-  // const page = parseInt(searchParams.page || "1");
   const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
   // Fetch products function with abort controller for smooth UX
