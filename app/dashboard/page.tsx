@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 
 import { fetchProducts } from '@/lib/prisma';
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 import React from 'react'
 
 const Dashboard = async ({searchParams}: {searchParams: {page?:string}}) => {
@@ -42,14 +43,14 @@ const Dashboard = async ({searchParams}: {searchParams: {page?:string}}) => {
       <div className='mt-12 w-full flex items-center justify-center'>
         {
           [...Array(pagination.totalPages)].map((_, i)=>(
-            <a
+            <Link
             key={i+1}
             href={`?page=${i + 1}&limit=12`}
             className={`px-3 py-1 rounded ${pagination.currentPage === i + 1 ? 'bg-gray-400 text-black' : 'bg-white text-black border-black'}`}
             >
             
               {i+1}
-            </a>
+            </Link>
           ))
         }
       </div>

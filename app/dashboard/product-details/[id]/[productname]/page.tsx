@@ -1,7 +1,10 @@
 'use client'
+import { Button } from '@/components/ui/button';
+import { Edit } from 'lucide-react';
 // import { Product } 'from @prisma/client';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import Link from 'next/link';
+import React, { use, useState } from 'react';
 import toast from 'react-hot-toast';
 
 interface ProductDetailsProps {
@@ -22,7 +25,7 @@ interface Product {
 }
 
 const ProductDetailsPage = ({ params }: ProductDetailsProps) => {
-  const { id } = params;            
+  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [mainImage, setMainImage] = useState<string>('');
 
@@ -120,6 +123,16 @@ const ProductDetailsPage = ({ params }: ProductDetailsProps) => {
                 {product.stock} units
               </span>
             </div>
+
+            <Button
+                 className='w-full mt-8 bg-blue-400 border-blue-800 hover:bg-blue-600 transform ease-in-out cursor-pointer'
+                 >
+                       <Link href={`/dashboard/update-product/${id}` }
+                       className='flex items-center gap-2'
+                       >
+     <Edit/> <span>Edit</span>
+     </Link>
+            </Button>
           </div>
         </div>
       </div>

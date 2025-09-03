@@ -16,7 +16,7 @@ interface ProductCardProps {
     limit: number;
   };
 }
-const ProductCard = ({products, image, pagination}: ProductCardProps) => {
+const ProductCard = ({products, image}: ProductCardProps) => {
   const[isLoading, setisLoading] = useState(false);
   const handleDelete = async(id: number)=>{
     if(!confirm('Are you sure?')) return;
@@ -85,9 +85,13 @@ const ProductCard = ({products, image, pagination}: ProductCardProps) => {
                 <Trash/> <span>Delete</span>
               </Button>
                  <Button
-                 className='bg-blue-400 border-blue-800 hover:bg-blue-600 transform ease-in-out'
+                 className='bg-blue-400 border-blue-800 hover:bg-blue-600 transform ease-in-out cursor-pointer'
                  >
-              <Edit/> <span>Edit</span>
+                       <Link href={`/dashboard/update-product/${items.id}` }
+                       className='flex items-center gap-2'
+                       >
+     <Edit/> <span>Edit</span>
+     </Link>
             </Button>
          </div>
           </div>

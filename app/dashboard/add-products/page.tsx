@@ -31,10 +31,10 @@ const AddProducts = () => {
         
         switch(name) {
             case 'product_name':
-                if (!value.trim()) errorMessage = 'Product name is required';
+                if (typeof value === 'string' && !value.trim()) errorMessage = 'Product name is required';
                 break;
             case 'description':
-                if (!value.trim()) errorMessage = 'Description is required';
+                if (typeof value === 'string' && !value.trim()) errorMessage = 'Description is required';
                 break;
             case 'price':
                 if (!value) errorMessage = 'Price is required';
@@ -96,7 +96,12 @@ const AddProducts = () => {
         data.append('price', formData.price);
         data.append('discount', formData.discount);
         data.append('stock', formData.stock);
-        data.append('userid', session.user.id.toString());
+        if (session && session.user && session.user.id) {
+            data.append('userid', session.user.id.toString());
+        } else {
+            alert('User session not found. Please log in.');
+            return;
+        }
 
         formData.images.forEach((img, idx) => {
             data.append('images', img);
