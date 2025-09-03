@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createProduct, fetchProducts } from "@/lib/prisma";
-import fs from "fs";
-import path from "path";
+
 import cloudinary from "@/lib/cloudinary";
 
 export async function POST(req: Request) {

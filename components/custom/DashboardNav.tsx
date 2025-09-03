@@ -82,8 +82,30 @@ const DashboardNav = ({ user }: DashboardNavProps) => {
   };
 
   useEffect(() => {
+  const triggerStockCheck = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/stock-check', { method: 'POST' });
+      if (response.ok) {
+        setTimeout(fetchNotifications, 500);
+      }
+    } catch (error) {
+      console.error('Error triggering stock check:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchNotifications();
+  triggerStockCheck();
+
+  const interval = setInterval(fetchNotifications, 30000);
+  return () => clearInterval(interval);
+}, []); 
+
+  useEffect(() => {
     fetchNotifications();
-    triggerStockCheck();
+
     
     // Fetch notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000);
