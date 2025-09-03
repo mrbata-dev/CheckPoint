@@ -30,6 +30,7 @@ model Product {
   userid      Int
   discount    Float @default(0)
   image       Image[]
+  notification Notification[]
   user        User     @relation(fields: [userid], references: [id])
 }
 
@@ -65,6 +66,16 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  createdAt DateTime @default(now())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  read      Boolean  @default(false) 
+}
+
 
 enum Role {
   USER
