@@ -2,6 +2,7 @@
 import ProductCard from '@/components/custom/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Search, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
@@ -55,19 +56,22 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 const Dashboard = ({ searchParams }: DashboardProps) => {
-  const [searchQuery, setSearchQuery] = useState(searchParams.q || '');
+  const urlSearchParams = useSearchParams();
+  const page = urlSearchParams.get('page') ?? '1';
+  const q = urlSearchParams.get('q') ?? '';
+
+  const [searchQuery, setSearchQuery] = useState(q);
   const [products, setProducts] = useState<Product[]>([]);
   const [pagination, setPagination] = useState<Pagination>({
-    currentPage: 1,
+    currentPage: parseInt(page),
     totalPages: 1,
     totalCount: 0,
-    limit: 12
+    limit: 12,
   });
   const [loading, setLoading] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-
   // const page = parseInt(searchParams.page || "1");
   const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
