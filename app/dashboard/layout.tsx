@@ -12,6 +12,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // If not logged in or not admin, redirect to login
   if (!session || session.user.role !== 'ADMIN') {
+    console.log('session xaina');
+    
     redirect('/login');
   }
 
