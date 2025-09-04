@@ -20,6 +20,10 @@ context: { params: Promise<{ id: string }> }
     if (isNaN(productId)) {
       return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
     }
+    // delete notifications
+    await prisma.notification.deleteMany({
+  where: { productId }
+});
 
     // Delete associated images first
     await prisma.image.deleteMany({
