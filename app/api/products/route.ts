@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createProduct, fetchProducts } from "@/lib/prisma";
 
 import cloudinary from "@/lib/cloudinary";
+import { UploadApiResponse } from "cloudinary";
 
 export async function POST(req: Request) {
   try {
@@ -26,13 +27,15 @@ for (const file of files) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  const uploadResult = await new Promise<any>((resolve, reject) => {
+  const uploadResult: UploadApiResponse = await new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "products" },
       (error, result) => {
         if (error) reject(error);
-        else resolve(result);
-      }
+        else if (result) resolve(result); 
+      else reject(new Error("Cloudinary upload failed")); 
+    }
+      
     );
     stream.end(buffer);
   });

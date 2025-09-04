@@ -62,6 +62,8 @@ export default function SignUpPage() {
         router.push("/dashboard?message=Account created successfully");
       }
     } catch (error) {
+      console.log(error);
+      
       setError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
