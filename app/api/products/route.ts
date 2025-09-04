@@ -27,7 +27,7 @@ for (const file of files) {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  const uploadResult: UploadApiResponse = await new Promise((resolve, reject) => {
+  const uploadResult: UploadApiResponse = await new Promise<UploadApiResponse>((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "products" },
       (error, result) => {
