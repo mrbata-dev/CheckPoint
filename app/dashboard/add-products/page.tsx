@@ -8,6 +8,7 @@ import React, { useState } from 'react'
 
 const AddProducts = () => {
     const { data: session } = useSession();
+    const[isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         product_name: '',
         description: '0',
@@ -54,11 +55,13 @@ const AddProducts = () => {
         
         return errorMessage;
     };
+    
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        
-        if (name === 'images' && e.target instanceof HTMLInputElement && e.target.type === 'file') {
+       
+       
+         if (name === 'images' && e.target instanceof HTMLInputElement && e.target.type === 'file') {
             const files = e.target.files;
             if (files) {
                 setFormData(prev => ({ ...prev, images: Array.from(files).slice(0, 5) }));
@@ -68,6 +71,7 @@ const AddProducts = () => {
             setFormData(prev => ({ ...prev, [name]: value }));
             setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
         }
+       
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -87,9 +91,10 @@ const AddProducts = () => {
         
         // Check if there are any errors
         if (Object.values(newErrors).some(error => error !== '')) {
-            return; // Don't submit if there are errors
+            return; 
         }
 
+        setIsLoading(true); 
         const data = new FormData();
         data.append('product_name', formData.product_name);
         data.append('description', formData.description);
@@ -133,6 +138,9 @@ const AddProducts = () => {
             console.error(err);
             alert('Failed to add product');
         }
+        finally{
+        setIsLoading(false);
+       }
     };
 
     return (
@@ -245,12 +253,24 @@ const AddProducts = () => {
                         Reset Form
                     </Button>
                     
-                    <Button
-                        type='submit'
-                        className='bg-blue-600 hover:bg-blue-700 text-white px-6 py-2'
-                    >
-                        Add Product
-                    </Button>
+                 <Button
+  type="submit"
+  disabled={isLoading}
+  className={`bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition ease-in flex items-center justify-center gap-2 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+>
+  {isLoading ? (
+    <>
+      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      Adding...
+    </>
+  ) : (
+    "Add Product"
+  )}
+</Button>
+
                 </div>
             </form>
         </div>

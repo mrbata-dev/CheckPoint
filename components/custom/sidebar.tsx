@@ -1,7 +1,10 @@
 'use client'
 import { LogOut, Menu, X } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
+import { Button } from '../ui/button'
+import { signOut } from 'next-auth/react'
 
 const dashboardNavLinks = [
   { name: "All products", href: `/dashboard` },
@@ -9,7 +12,20 @@ const dashboardNavLinks = [
 ]
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  // const router = useRouter();
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await fetch("/api/logout", { method: "POST" });
+
+  //     if (res.ok) {
+        
+  //       router.push("/login");
+  //     }
+  //   } catch (err) {
+  //     console.error("Logout failed", err);
+  //   }
+  // };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
@@ -75,14 +91,16 @@ const Sidebar = () => {
 
         {/* Logout Section */}
         <div className="p-6 border-t border-gray-200">
-          <Link
-            href="/logout"
-            onClick={() => setIsOpen(false)}
+          <Button
+            onClick={()=> signOut({callbackUrl:"/login"})}
+            type="button"
             className="
+            bg-transparent
               flex items-center gap-3 w-full px-4 py-3 rounded-lg
               text-gray-700 hover:bg-red-50 hover:text-red-600
               transition-all duration-200 ease-in-out
               font-medium text-base
+              cursor-pointer
               group
             "
           >
@@ -91,7 +109,7 @@ const Sidebar = () => {
               className="group-hover:scale-110 transition-transform duration-200" 
             />
             <span>Logout</span>
-          </Link>
+          </Button>
         </div>
       </div>
     </>
