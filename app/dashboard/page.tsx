@@ -31,6 +31,13 @@ interface Pagination {
   limit: number;
 }
 
+// interface DashboardProps {
+//   searchParams: Promise<{ 
+//     page?: string;
+//     q?: string;
+//   }>;
+// }
+
 // Debounce utility function
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -68,42 +75,42 @@ const Dashboard = () => {
   const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
   // Fetch products function with abort controller for smooth UX
-  const fetchProducts = useCallback(async (currentPage: number = 1, query: string = '') => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+const fetchProducts = useCallback(async (currentPage: number = 1, query: string = '') => {
+  if (abortControllerRef.current) {
+    abortControllerRef.current.abort();
+  }
+  
+  abortControllerRef.current = new AbortController();
+  setLoading(true);
+  
+  try {
+    // Always use the search endpoint
+    const url = `/api/search?q=${encodeURIComponent(query)}&page=${currentPage}&limit=12`;
     
-    abortControllerRef.current = new AbortController();
-    setLoading(true);
+    const response = await fetch(url, {
+      signal: abortControllerRef.current.signal
+    });
     
-    try {
-      // Always use the search endpoint
-      const url = `/api/search?q=${encodeURIComponent(query)}&page=${currentPage}&limit=12`;
-      
-      const response = await fetch(url, {
-        signal: abortControllerRef.current.signal
+    if (response.ok) {
+      const data = await response.json();
+      setProducts(data.products || []);
+      setPagination(data.pagination || {
+        currentPage,
+        totalPages: Math.ceil((data.products?.length || 0) / 12),
+        totalCount: data.products?.length || 0,
+        limit: 12
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data.products || []);
-        setPagination(data.pagination || {
-          currentPage,
-          totalPages: Math.ceil((data.products?.length || 0) / 12),
-          totalCount: data.products?.length || 0,
-          limit: 12
-        });
-      } else {
-        console.error('Failed to fetch products:', await response.json());
-      }
-    } catch (error) {
-      if (typeof error === 'object' && error !== null && 'name' in error && (error as { name: string }).name !== 'AbortError') {
-        console.error('Error fetching products:', error);
-      }
-    } finally {
-      setLoading(false);
+    } else {
+      console.error('Failed to fetch products:', await response.json());
     }
-  }, []);
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'name' in error && (error as { name: string }).name !== 'AbortError') {
+      console.error('Error fetching products:', error);
+    }
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   // Initial load and search effect
   useEffect(() => {
@@ -127,82 +134,87 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='min-h-screen'>
-      <div className='w-full mx-auto p-6 sm:p-8'>
-        {/* Header Section - Always Centered */}
-        <div className='flex flex-col  mb-12'>
+    <div className='min-h-screen flex  justify-center'>
+      <div className=' mx-auto p-6 sm:p-8 flex flex-col '>
+        {/* Header Section */}
+        <div className='mb-12'>
           <div className='text-left mb-8'>
-            <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2 text-left'>
+            <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2'>
               Discover Products
             </h1>
             <p className='text-slate-600 text-lg'>
               {isSearching 
                 && `Found ${pagination.totalCount} results for "${debouncedSearchQuery}"` 
+               
               }
             </p>
           </div>
 
-          {/* Search Bar - Always Centered */}
-          <div className='w-full max-w-4xl justify-center-safe items-center-safe'>
-            <div className={`
-              relative flex items-center bg-white rounded-2xl shadow-lg 
-              border-2 transition-all duration-300 overflow-hidden
-              ${searchFocused ? ' shadow-xl scale-[1.02]' : 'border-slate-200 hover:border-slate-300'}
-            `}>
-              <div className='absolute left-4 text-slate-400'>
-                <Search size={20} />
-              </div>
-              
-              <input
-                type='search'
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                placeholder="Search products by name or description..."
-                className='w-full pl-12 pr-20 py-4 outline-none text-slate-700 placeholder-slate-400 text-lg'
-              />
-              
-              <div className="flex items-center pr-2">
-                {loading && (
-                  <div className="mr-2">
-                    <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                  </div>
-                )}
+          <div className='flex justify-center items-center mb-8'>
+            <div className='relative w-full max-w-2xl'>
+              <div className={`
+                relative flex items-center bg-white rounded-2xl shadow-lg 
+                border-2 transition-all duration-300 overflow-hidden
+                ${searchFocused ? ' shadow-xl scale-[1.02]' : 'border-slate-200 hover:border-slate-300'}
+              `}>
+                <div className='absolute left-4 text-slate-400'>
+                  <Search size={20} />
+                </div>
+                
+                <input
+                  type='search'
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  placeholder="Search products by name or description..."
+                  className='w-full pl-12 pr-20 py-4 outline-none text-slate-700 placeholder-slate-400 text-lg md:w-2xl justify-center-safe'
+                />
+                
+                <div className="flex items-center pr-2">
 
-                {searchQuery && (
-                  <button
-                    onClick={clearSearch}
-                    className="p-1 mr-2 text-slate-400 hover:text-slate-600 transition-colors duration-200 hover:bg-slate-100 rounded-full"
-                    aria-label="Clear search"
+                  {loading && (
+                    <div className="mr-2">
+                      <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    </div>
+                  )}
+
+                  {searchQuery && (
+                    <button
+                      onClick={clearSearch}
+                      className="p-1 mr-2 text-slate-400 hover:text-slate-600 transition-colors duration-200 hover:bg-slate-100 rounded-full"
+                      aria-label="Clear search"
+                    >
+                      <X size={18} />
+                    </button>
+                  )}
+                  
+                  {/* Search button */}
+                  <Button 
+                    className='bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-200'
                   >
-                    <X size={18} />
-                  </button>
-                )}
-                
-                {/* Search button */}
-                <Button 
-                  className='bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-200'
-                >
-                  <Search size={18} />
-                </Button>
+                    <Search size={18} />
+                  </Button>
+                </div>
               </div>
+              
+
+              {searchFocused && searchQuery.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-slate-200 z-10">
+                  
+                </div>
+              )}
             </div>
-            
-            {searchFocused && searchQuery.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-slate-200 z-10">
-                
-              </div>
-            )}
           </div>
+
+      
         </div>
 
-       
-        <div className='w-vh flex flex-col items-center justify-center'>
-          
-          {/* Loading State - Centered */}
+        {/* Results Section */}
+        <div className='relative flex flex-col items-center justify-center'>
+      
           {loading && (
-            <div className='w-svh flex items-center justify-center py-16'>
+            <div className=' bg-white/50  flex items-center justify-center z-10 rounded-xl'>
               <div className='text-center'>
                 <div className='animate-spin h-8 w-8 border-3 border-blue-500 border-t-transparent rounded-full mx-auto mb-2'></div>
                 <p className='text-slate-600 font-medium'>Searching products...</p>
@@ -210,28 +222,28 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* No results message - Centered */}
+          {/* No results message */}
           {!loading && products.length === 0 && debouncedSearchQuery && (
-            <div className="w-svh flex items-center justify-center py-16">
-              <div className='text-center'>
+            <div className="text-center py-16 flex items-center justify-center flex-col min-w-full ">
+              <div className='mb-6'>
                 <div className='w-24 h-24 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center'>
                   <Search size={32} className='text-slate-400' />
                 </div>
                 <h3 className='text-xl font-semibold text-slate-700 mb-2'>No products found</h3>
                 <p className="text-slate-500 mb-6">We couldn&apos;t find any products matching `{debouncedSearchQuery}`</p>
-                <Button 
-                  onClick={clearSearch}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
-                >
-                  View all products
-                </Button>
               </div>
+              <Button 
+                onClick={clearSearch}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200"
+              >
+                View all products
+              </Button>
             </div>
           )}
 
-          {/* Product cards - Centered */}
-          {!loading && products.length > 0 && (
-            <div className="w-full max-w-7xl">
+          {/* Product cards */}
+          {products.length > 0 && (
+            <div className={`transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'} w-full`}>
               <ProductCard
                 products={products}
                 image={products.map(product => product.image?.[0]?.url ?? '')}
@@ -240,8 +252,9 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Enhanced Pagination - Centered */}
-          {!loading && products.length > 0 && pagination.totalPages > 1 && (
+          {/* Enhanced Pagination */}
+          {
+          !loading && products.length > 0 && pagination.totalPages > 1 && (
             <div className='mt-16 flex justify-center'>
               <div className='flex items-center space-x-2 bg-white rounded-xl p-2 shadow-lg border border-slate-200'>
                 {/* Previous button */}
@@ -295,7 +308,8 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
-          )}
+          )
+          }
         </div>
       </div>
     </div>
