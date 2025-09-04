@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createProduct, fetchProducts } from "@/lib/prisma";
 
 import cloudinary from "@/lib/cloudinary";
-interface UploadResult {
-  secure_url: string;
-}
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
