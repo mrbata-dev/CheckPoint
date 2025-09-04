@@ -252,7 +252,7 @@ const fetchProducts = useCallback(async (currentPage: number = 1, query: string 
             </div>
           )}
 
-          {/* Enhanced Pagination */}
+          {/*  Pagination */}
           {
           !loading && products.length > 0 && pagination.totalPages > 1 && (
             <div className='mt-16 flex justify-center'>

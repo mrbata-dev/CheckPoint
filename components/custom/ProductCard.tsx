@@ -70,7 +70,7 @@ const ProductCard = ({ products, image }: ProductCardProps) => {
               {/* Clickable Image and Info Area */}
               <Link href={`/dashboard/product-details/${items.id}/${items.p_name}`} className="block">
                 {/* Image Container */}
-                <div className="relative overflow-hidden rounded-xl mb-4 group/image cursor-pointer">
+                <div className="relative overflow-hidden rounded-xl mb-4 group/image cursor-pointer md:w-[15rem] lg:w-[20rem]">
                   <div className="aspect-[4/3] w-full">
                     <Image
                       src={image[idx]}
