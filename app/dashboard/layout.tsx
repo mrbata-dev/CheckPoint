@@ -23,11 +23,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <header className="bg-accent-foreground text-white">
         <DashboardNav user={{ name: session.user.name ?? "" }} />
       </header>
-      <main className="flex ">
-        <div className="lg:w-xs   text-shadow-white">
+      <main className="flex w-full items-center ">
+        <div className="lg:w-xs   text-shadow-white justify-end-safe">
           <Sidebar/>
         </div>
-        {children}
+        <div className="justify-center-safe items-center-safe">{children}</div>
         </main>
     </div>
     </Providers>

@@ -130,9 +130,9 @@ const Dashboard = () => {
     <div className='min-h-screen'>
       <div className='w-full mx-auto p-6 sm:p-8'>
         {/* Header Section - Always Centered */}
-        <div className='flex flex-col items-center mb-12'>
-          <div className='text-center mb-8'>
-            <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2'>
+        <div className='flex flex-col  mb-12'>
+          <div className='text-left mb-8'>
+            <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2 text-left'>
               Discover Products
             </h1>
             <p className='text-slate-600 text-lg'>
@@ -143,7 +143,7 @@ const Dashboard = () => {
           </div>
 
           {/* Search Bar - Always Centered */}
-          <div className='w-full max-w-2xl'>
+          <div className='w-full max-w-4xl justify-center-safe items-center-safe'>
             <div className={`
               relative flex items-center bg-white rounded-2xl shadow-lg 
               border-2 transition-all duration-300 overflow-hidden
