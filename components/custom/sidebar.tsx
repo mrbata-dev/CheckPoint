@@ -1,7 +1,7 @@
 'use client'
 import { LogOut, Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
 import { signOut } from 'next-auth/react'
