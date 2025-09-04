@@ -21,25 +21,30 @@ export async function POST(req: Request) {
     }
 
     // Handle multiple images
-     const images: { url: string }[] = [];
-    const files = formData.getAll("images") as File[];
+    const images: { url: string }[] = [];
+const files = formData.getAll("images") as File[];
 
-    for (const file of files) {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+for (const file of files) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
 
-      // Upload to Cloudinary
-      const uploadResult = await new Promise<UploadResult>((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "products" }, (error) => {
-            if (error) reject(error);
-            else resolve(new Error('upload result is undefined') as unknown as UploadResult);
-          })
-          .end(buffer);
-      });
+  const uploadResult = await new Promise<any>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "products" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
 
-      images.push({ url: uploadResult.secure_url });
-    }
+  if (!uploadResult?.secure_url) {
+    throw new Error("Cloudinary upload failed");
+  }
+
+  images.push({ url: uploadResult.secure_url });
+}
 
     const product = await createProduct({
       p_name: product_name,

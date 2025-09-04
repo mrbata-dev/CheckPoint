@@ -21,8 +21,8 @@ const AddProducts = () => {
         product_name: '',
         description: '',
         price: '',
-        discount: '0',
-        stock: '0',
+        discount: '',
+        stock: '',
         images: ''
     });
 
