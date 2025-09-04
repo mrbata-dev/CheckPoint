@@ -1,10 +1,11 @@
 'use client'
 import { LogOut, Menu, X } from 'lucide-react'
 import Link from 'next/link'
-
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
 import { signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
+import clsx from 'clsx'
 
 const dashboardNavLinks = [
   { name: "All products", href: `/dashboard` },
@@ -13,19 +14,15 @@ const dashboardNavLinks = [
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // const router = useRouter();
-  // const handleLogout = async () => {
-  //   try {
-  //     const res = await fetch("/api/logout", { method: "POST" });
-
-  //     if (res.ok) {
-        
-  //       router.push("/login");
-  //     }
-  //   } catch (err) {
-  //     console.error("Logout failed", err);
-  //   }
-  // };
+  const pathname = usePathname();
+  
+  // Function to check if the current path matches the link
+  const isActive = (href: string) => {
+    if (href === '/dashboard') {
+      return pathname === '/dashboard';
+    }
+    return pathname === href;
+  };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
@@ -52,7 +49,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`
-          fixed lg:sticky top-0 left-0 h-screen w-64 sm:w-72 
+          fixed lg:sticky top-0 left-0 h-screen w-64 sm:w-72
           bg-white border-r border-gray-200 shadow-lg
           transform transition-transform duration-300 ease-in-out z-40
           flex flex-col
@@ -71,14 +68,14 @@ const Sidebar = () => {
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  onClick={() => setIsOpen(false)} 
-                  className="
-                    block w-full px-4 py-3 rounded-lg text-gray-700
-                    hover:bg-black hover:text-white
-                    transition-all duration-200 ease-in-out
-                    font-medium text-base
-                    group
-                  "
+                  onClick={() => setIsOpen(false)}
+                  className={clsx(
+                    "block w-full px-4 py-3 rounded-lg transition-all duration-200 ease-in-out font-medium text-base group",
+                    {
+                      "bg-black text-white": isActive(item.href),
+                      "text-gray-700 hover:bg-black hover:text-white": !isActive(item.href)
+                    }
+                  )}
                 >
                   <span className="group-hover:translate-x-1 inline-block transition-transform duration-200">
                     {item.name}
@@ -92,10 +89,10 @@ const Sidebar = () => {
         {/* Logout Section */}
         <div className="p-6 border-t border-gray-200">
           <Button
-            onClick={()=> signOut({callbackUrl:"/login"})}
+            onClick={() => signOut({callbackUrl:"/login"})}
             type="button"
             className="
-            bg-transparent
+              bg-transparent
               flex items-center gap-3 w-full px-4 py-3 rounded-lg
               text-gray-700 hover:bg-red-50 hover:text-red-600
               transition-all duration-200 ease-in-out
@@ -104,9 +101,9 @@ const Sidebar = () => {
               group
             "
           >
-            <LogOut 
-              size={20} 
-              className="group-hover:scale-110 transition-transform duration-200" 
+            <LogOut
+              size={20}
+              className="group-hover:scale-110 transition-transform duration-200"
             />
             <span>Logout</span>
           </Button>
